@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "created_utc": "2026-07-31T22:11:05Z",
+  "interpretation": "Two independently created clean software environments reproduced the registered computation; this is not an independent scientific replication.",
+  "reference_environment": {
+    "python": "CPython 3.13.12",
+    "system": "macOS 26.6",
+    "machine": "arm64",
+    "numpy_blas_lapack": "Accelerate",
+    "computational_threads": 1,
+    "runtime_lock": "code/requirements-lock.txt",
+    "runtime_lock_sha256": "b1b02d84e0991707d67530775a1c01750ce982c8c6a12f30757e23e8a6ad9db9",
+    "version_locked": true,
+    "hash_locked": false
+  },
+  "frozen_artifacts": {
+    "experiment_source_sha256": "9115d975a645828be9f04e14d8fdc7dab670f1e36fe6094d1950695d5cc20030",
+    "locked_results_sha256": "f12f2d1fb6b7ab907685282a7c77f2f8d10b284d3382c77689b6aff4c48fab3b",
+    "final_wheel_sha256": "82387fa15a005d7172d8d5d6e732f4654a990f861c368422d4b6d6eb72706b3c",
+    "environment_b_results_sha256": "2cbbe12524eb83ff725da42f08dd8681b189f3335624965ddb4d926731d0681f"
+  },
+  "environment_a2": {
+    "role": "artifact_generator",
+    "fresh_offline_environment": true,
+    "installed_package_version": "mfcell 2.0.0",
+    "installed_experiment_source_sha256": "9115d975a645828be9f04e14d8fdc7dab670f1e36fe6094d1950695d5cc20030",
+    "result": "PASS"
+  },
+  "environment_b": {
+    "role": "final_wheel_verifier",
+    "fresh_offline_environment": true,
+    "installed_package_version": "mfcell 2.0.0",
+    "installed_experiment_source_sha256": "9115d975a645828be9f04e14d8fdc7dab670f1e36fe6094d1950695d5cc20030",
+    "installed_locked_results_sha256": "f12f2d1fb6b7ab907685282a7c77f2f8d10b284d3382c77689b6aff4c48fab3b",
+    "verification_command_result": "PASS"
+  },
+  "direct_a2_b_comparison": {
+    "status": "PASS",
+    "comparison": "full scientific projection",
+    "excluded_top_level_fields": [
+      "environment",
+      "solver_runtime"
+    ],
+    "relative_tolerance": 0.005,
+    "absolute_tolerance": 0.00005,
+    "exact_projection_equal": true,
+    "environment_a2_projection_sha256": "a1834ee771cf4659477a7b7cd522864a16fa19945951b66c5d645824f8f7fdeb",
+    "environment_b_projection_sha256": "a1834ee771cf4659477a7b7cd522864a16fa19945951b66c5d645824f8f7fdeb",
+    "per_gene_metrics_included": true,
+    "per_gene_differences_exact": true,
+    "method_spearman_included": true,
+    "reported_metrics_excluded": false
+  }
+}

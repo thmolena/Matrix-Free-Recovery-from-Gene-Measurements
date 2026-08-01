@@ -1,9 +1,0 @@
-# Optional accelerated backends. The CPU reference runs everything without
-# these; they enable larger-scale runs and a learned message-passing GNN.
-#   torch            -- GNN forecasting backend + RL active-sampling policy
-#   cuml / cugraph   -- GPU kNN-graph build + label propagation (RAPIDS)
-#   torch-geometric  -- message-passing GNN layers over the cell graph
-torch>=2.0
-# cuml>=23.10               # requires CUDA-capable GPU (RAPIDS)
-# cugraph>=23.10            # GPU connected-components / kNN graph
-# torch-geometric>=2.4

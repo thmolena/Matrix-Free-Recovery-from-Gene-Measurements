@@ -1,31 +1,41 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "specops-dsto"
-version = "0.2.0"
-description = "Spectral-truncated, drive-directed (noncommutative) graph operators for inductive quantum-phase classification across a control-parameter sweep"
-readme = { text = "Directed spectral-truncated operators for inductive classification of quantum phases across a control-parameter sweep, from classical-shadow features.", content-type = "text/plain" }
-requires-python = ">=3.9"
-license = { text = "MIT" }
+name = "mfcell"
+version = "2.0.0"
+description = "Leakage-audited matrix-free residual propagation for public single-cell data"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+license = "MIT"
 authors = [{ name = "Molena Huynh" }]
 dependencies = [
-  "numpy>=1.24", "scipy>=1.10", "networkx>=3.0",
-  "scikit-learn>=1.2", "matplotlib>=3.6", "pyyaml>=6.0",
+  "numpy==2.4.3",
+  "scipy==1.17.1",
+  "scikit-learn==1.8.0",
+  "matplotlib==3.10.8",
 ]
 
 [project.optional-dependencies]
-gpu = ["torch>=2.0"]
-dev = ["pytest>=7.0"]
+test = ["pytest>=8"]
 
 [project.scripts]
-dsto-reproduce = "stdd.reproduce:main"
-# Backwards-compatible alias for the original console command.
-stdd-reproduce = "stdd.reproduce:main"
+mfcell-reproduce = "mfcell.reproduce:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["mfcell*"]
+
+[tool.setuptools.package-data]
+mfcell = [
+  "data/source/*.tar.gz",
+  "results/*.json",
+  "results/*.tex",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

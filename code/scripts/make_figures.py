@@ -1,24 +1,27 @@
-#!/usr/bin/env python
-"""Generate all figures from results/summary.json."""
-import json
+#!/usr/bin/env python3
+"""Recompute the experiment and regenerate every manuscript figure and table."""
+from __future__ import annotations
+
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
-import _bootstrap  # noqa: F401
-
-from stdd import plotting
+REPOSITORY = Path(__file__).resolve().parents[2]
+BASE_COMMAND = ["mfcell-reproduce","--write"]
 
 
 def main() -> None:
-    summary = json.loads(Path("results/summary.json").read_text())
-    out = Path("figures")
-    out.mkdir(exist_ok=True)
-    plotting.fig_schematic(summary, out / "fig_schematic.pdf")
-    plotting.fig_sweep(summary, out / "fig_sweep.pdf")
-    plotting.fig_forecast_bars(summary, out / "fig_forecast.pdf")
-    plotting.fig_operator(summary, out / "fig_operator.pdf")
-    plotting.fig_calibration(summary, out / "fig_calibration.pdf")
-    print(f"wrote {out}/fig_schematic.pdf, {out}/fig_sweep.pdf, "
-          f"{out}/fig_forecast.pdf, {out}/fig_operator.pdf, {out}/fig_calibration.pdf")
+    if not BASE_COMMAND:
+        raise SystemExit("No separate command is required; see code/README.md.")
+    command = list(BASE_COMMAND)
+    if command[0] == "python":
+        command[0] = sys.executable
+    elif shutil.which(command[0]) is None:
+        raise SystemExit(
+            f"{command[0]!r} is not installed. Follow the locked install in code/README.md"
+        )
+    subprocess.run(command + sys.argv[1:], cwd=REPOSITORY, check=True)
 
 
 if __name__ == "__main__":

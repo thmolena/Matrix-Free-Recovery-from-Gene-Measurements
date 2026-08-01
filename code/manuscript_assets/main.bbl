@@ -1,0 +1,216 @@
+\begin{thebibliography}{24}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[{10x Genomics}(2016)]{tenxPBMC3k}
+{10x Genomics}.
+\newblock 3k {PBMCs} from a healthy donor, 2016.
+\newblock URL
+  \url{https://www.10xgenomics.com/datasets/3-k-pbm-cs-from-a-healthy-donor-1-standard-1-1-0}.
+\newblock Cell Ranger 1.1.0; CC BY 4.0; accessed 31 July 2026.
+
+\bibitem[{10x Genomics}(2017)]{tenxPBMC4k}
+{10x Genomics}.
+\newblock 4k {PBMCs} from a healthy donor, 2017.
+\newblock URL
+  \url{https://www.10xgenomics.com/datasets/4-k-pbm-cs-from-a-healthy-donor-2-standard-2-1-0}.
+\newblock Cell Ranger 2.1.0; CC BY 4.0; accessed 31 July 2026.
+
+\bibitem[Andrews and Hemberg(2018)]{andrews2018dropout}
+Tallulah~S. Andrews and Martin Hemberg.
+\newblock False signals induced by single-cell {RNA}-seq imputation.
+\newblock \emph{F1000Research}, 7:\penalty0 1740, 2018.
+\newblock \doi{10.12688/f1000research.16613.2}.
+
+\bibitem[Belkin et~al.(2006)Belkin, Niyogi, and Sindhwani]{belkin2006manifold}
+Mikhail Belkin, Partha Niyogi, and Vikas Sindhwani.
+\newblock Manifold regularization: A geometric framework for learning from
+  labeled and unlabeled examples.
+\newblock \emph{Journal of Machine Learning Research}, 7:\penalty0 2399--2434,
+  2006.
+\newblock URL \url{https://www.jmlr.org/papers/v7/belkin06a.html}.
+
+\bibitem[Benzi(2002)]{benzi2002preconditioning}
+Michele Benzi.
+\newblock Preconditioning techniques for large linear systems: A survey.
+\newblock \emph{Journal of Computational Physics}, 182\penalty0 (2):\penalty0
+  418--477, 2002.
+\newblock \doi{10.1006/jcph.2002.7176}.
+
+\bibitem[Breiman(2001)]{breiman2001random}
+Leo Breiman.
+\newblock Random forests.
+\newblock \emph{Machine Learning}, 45:\penalty0 5--32, 2001.
+\newblock \doi{10.1023/A:1010933404324}.
+
+\bibitem[Geurts et~al.(2006)Geurts, Ernst, and Wehenkel]{geurts2006extremely}
+Pierre Geurts, Damien Ernst, and Louis Wehenkel.
+\newblock Extremely randomized trees.
+\newblock \emph{Machine Learning}, 63:\penalty0 3--42, 2006.
+\newblock \doi{10.1007/s10994-006-6226-1}.
+
+\bibitem[Green et~al.(2021)Green, Balakrishnan, and
+  Tibshirani]{green2021minimax}
+Alden Green, Sivaraman Balakrishnan, and Ryan~J. Tibshirani.
+\newblock Minimax optimal regression over sobolev spaces via laplacian
+  regularization on neighborhood graphs.
+\newblock In \emph{Proceedings of the 24th International Conference on
+  Artificial Intelligence and Statistics}, volume 130, pages 2602--2610. PMLR,
+  2021.
+\newblock URL \url{https://proceedings.mlr.press/v130/green21a.html}.
+
+\bibitem[Harris et~al.(2020)Harris, Millman, van~der Walt, Gommers, Virtanen,
+  Cournapeau, Wieser, Taylor, Berg, Smith, Kern, Picus, Hoyer, van Kerkwijk,
+  Brett, Haldane, del R{\'i}o, Wiebe, Peterson, G{\'e}rard-Marchant, Sheppard,
+  Reddy, Weckesser, Abbasi, Gohlke, and Oliphant]{harris2020array}
+Charles~R. Harris, K.~Jarrod Millman, St{\'e}fan~J. van~der Walt, Ralf Gommers,
+  Pauli Virtanen, David Cournapeau, Eric Wieser, Julian Taylor, Sebastian Berg,
+  Nathaniel~J. Smith, Robert Kern, Matti Picus, Stephan Hoyer, Marten~H. van
+  Kerkwijk, Matthew Brett, Allan Haldane, Jaime~Fern{\'a}ndez del R{\'i}o, Mark
+  Wiebe, Pearu Peterson, Pierre G{\'e}rard-Marchant, Kevin Sheppard, Tyler
+  Reddy, Warren Weckesser, Hameer Abbasi, Christoph Gohlke, and Travis~E.
+  Oliphant.
+\newblock Array programming with {NumPy}.
+\newblock \emph{Nature}, 585:\penalty0 357--362, 2020.
+\newblock \doi{10.1038/s41586-020-2649-2}.
+
+\bibitem[Hestenes and Stiefel(1952)]{hestenes1952methods}
+Magnus~R. Hestenes and Eduard Stiefel.
+\newblock Methods of conjugate gradients for solving linear systems.
+\newblock \emph{Journal of Research of the National Bureau of Standards},
+  49:\penalty0 409--436, 1952.
+\newblock \doi{10.6028/jres.049.044}.
+
+\bibitem[Hoerl and Kennard(1970)]{hoerl1970ridge}
+Arthur~E. Hoerl and Robert~W. Kennard.
+\newblock Ridge regression: Biased estimation for nonorthogonal problems.
+\newblock \emph{Technometrics}, 12\penalty0 (1):\penalty0 55--67, 1970.
+\newblock \doi{10.1080/00401706.1970.10488634}.
+
+\bibitem[Huang et~al.(2018)Huang, Wang, Torre, Dueck, Shaffer, Bonasio, Murray,
+  Raj, Li, and Zhang]{huang2018saver}
+Mo~Huang, Jingshu Wang, Eduardo Torre, Hannah Dueck, Sydney Shaffer, Roberto
+  Bonasio, John~I. Murray, Arjun Raj, Mingyao Li, and Nancy~R. Zhang.
+\newblock {SAVER}: gene expression recovery for single-cell {RNA} sequencing.
+\newblock \emph{Nature Methods}, 15:\penalty0 539--542, 2018.
+\newblock \doi{10.1038/s41592-018-0033-z}.
+
+\bibitem[Huang et~al.(2021)Huang, He, Singh, Lim, and Benson]{huang2021correct}
+Qian Huang, Horace He, Abhay Singh, Ser-Nam Lim, and Austin~R. Benson.
+\newblock Combining label propagation and simple models out-performs graph
+  neural networks.
+\newblock In \emph{International Conference on Learning Representations}, 2021.
+\newblock URL \url{https://arxiv.org/abs/2010.13993}.
+
+\bibitem[Jia and Benson(2020)]{jia2020residual}
+Junteng Jia and Austin~R. Benson.
+\newblock Residual correlation in graph neural network regression.
+\newblock In \emph{Proceedings of the 26th ACM SIGKDD International Conference
+  on Knowledge Discovery and Data Mining}, pages 588--598, 2020.
+\newblock \doi{10.1145/3394486.3403101}.
+
+\bibitem[Lopez et~al.(2018)Lopez, Regier, Cole, Jordan, and
+  Yosef]{lopez2018scvi}
+Romain Lopez, Jeffrey Regier, Michael~B. Cole, Michael~I. Jordan, and Nir
+  Yosef.
+\newblock Deep generative modeling for single-cell transcriptomics.
+\newblock \emph{Nature Methods}, 15:\penalty0 1053--1058, 2018.
+\newblock \doi{10.1038/s41592-018-0229-2}.
+
+\bibitem[O'Leary(1980)]{oleary1980block}
+Dianne~P. O'Leary.
+\newblock The block conjugate gradient algorithm and related methods.
+\newblock \emph{Linear Algebra and its Applications}, 29:\penalty0 293--322,
+  1980.
+\newblock \doi{10.1016/0024-3795(80)90247-5}.
+
+\bibitem[Pedregosa et~al.(2011)Pedregosa, Varoquaux, Gramfort, Michel, Thirion,
+  Grisel, Blondel, Prettenhofer, Weiss, Dubourg, Vanderplas, Passos,
+  Cournapeau, Brucher, Perrot, and Duchesnay]{pedregosa2011scikit}
+Fabian Pedregosa, Ga{\"e}l Varoquaux, Alexandre Gramfort, Vincent Michel,
+  Bertrand Thirion, Olivier Grisel, Mathieu Blondel, Peter Prettenhofer, Ron
+  Weiss, Vincent Dubourg, Jake Vanderplas, Alexandre Passos, David Cournapeau,
+  Matthieu Brucher, Matthieu Perrot, and {\'E}douard Duchesnay.
+\newblock Scikit-learn: Machine learning in python.
+\newblock \emph{Journal of Machine Learning Research}, 12:\penalty0 2825--2830,
+  2011.
+\newblock URL \url{https://jmlr.org/papers/v12/pedregosa11a.html}.
+
+\bibitem[Saad(2003)]{saad2003iterative}
+Yousef Saad.
+\newblock \emph{Iterative Methods for Sparse Linear Systems}.
+\newblock SIAM, Philadelphia, 2 edition, 2003.
+\newblock \doi{10.1137/1.9780898718003}.
+
+\bibitem[Stone(1977)]{stone1977consistent}
+Charles~J. Stone.
+\newblock Consistent nonparametric regression.
+\newblock \emph{The Annals of Statistics}, 5\penalty0 (4):\penalty0 595--620,
+  1977.
+\newblock \doi{10.1214/aos/1176343886}.
+
+\bibitem[Svensson(2020)]{svensson2020droplet}
+Valentine Svensson.
+\newblock Droplet sc{RNA}-seq is not zero-inflated.
+\newblock \emph{Nature Biotechnology}, 38:\penalty0 147--150, 2020.
+\newblock \doi{10.1038/s41587-019-0379-5}.
+
+\bibitem[van Dijk et~al.(2018)van Dijk, Sharma, Nainys, Yim, Kathail, Carr,
+  Burdziak, Moon, Chaffer, Pattabiraman, Bierie, Mazutis, Wolf, Krishnaswamy,
+  and Pe'er]{vandijk2018magic}
+David van Dijk, Roshan Sharma, Juozas Nainys, Kristina Yim, Pooja Kathail,
+  Ambrose~J. Carr, Cassandra Burdziak, Kevin~R. Moon, Christine~L. Chaffer,
+  Diwakar Pattabiraman, Brian Bierie, Linas Mazutis, Guy Wolf, Smita
+  Krishnaswamy, and Dana Pe'er.
+\newblock Recovering gene interactions from single-cell data using data
+  diffusion.
+\newblock \emph{Cell}, 174\penalty0 (3):\penalty0 716--729.e27, 2018.
+\newblock \doi{10.1016/j.cell.2018.05.061}.
+
+\bibitem[Virtanen et~al.(2020)Virtanen, Gommers, Oliphant, Haberland, Reddy,
+  Cournapeau, Burovski, Peterson, Weckesser, Bright, van~der Walt, Brett,
+  Wilson, Millman, Mayorov, Nelson, Jones, Kern, Larson, Carey, Polat, Feng,
+  Moore, VanderPlas, Laxalde, Perktold, Cimrman, Henriksen, Quintero, Harris,
+  Archibald, Ribeiro, Pedregosa, and van Mulbregt]{virtanen2020scipy}
+Pauli Virtanen, Ralf Gommers, Travis~E. Oliphant, Matt Haberland, Tyler Reddy,
+  David Cournapeau, Evgeni Burovski, Pearu Peterson, Warren Weckesser, Jonathan
+  Bright, St{\'e}fan~J. van~der Walt, Matthew Brett, Joshua Wilson, K.~Jarrod
+  Millman, Nikolay Mayorov, Andrew R.~J. Nelson, Eric Jones, Robert Kern, Eric
+  Larson, C.~J. Carey, Ilhan Polat, Yu~Feng, Eric~W. Moore, Jake VanderPlas,
+  Denis Laxalde, Josef Perktold, Robert Cimrman, Ian Henriksen, E.~A. Quintero,
+  Charles~R. Harris, Anne~M. Archibald, Ant{\^o}nio~H. Ribeiro, Fabian
+  Pedregosa, and Paul van Mulbregt.
+\newblock {SciPy} 1.0: Fundamental algorithms for scientific computing in
+  {Python}.
+\newblock \emph{Nature Methods}, 17:\penalty0 261--272, 2020.
+\newblock \doi{10.1038/s41592-019-0686-2}.
+
+\bibitem[Zheng et~al.(2017)Zheng, Terry, Belgrader, Ryvkin, Bent, Wilson,
+  Ziraldo, Wheeler, McDermott, Zhu, Gregory, Shuga, Montesclaros, Underwood,
+  Masquelier, Nishimura, Schnall-Levin, Wyatt, Hindson, Bharadwaj, Wong, Ness,
+  Beppu, Deeg, McFarland, Loeb, Valente, Ericson, Stevens, Radich, Mikkelsen,
+  Hindson, and Bielas]{zheng2017massively}
+Grace X.~Y. Zheng, Jessica~M. Terry, Phillip Belgrader, Paul Ryvkin, Zachary~W.
+  Bent, Ryan Wilson, Solongo~B. Ziraldo, Tobias~D. Wheeler, Geoff~P. McDermott,
+  Junjie Zhu, Mark~T. Gregory, Joe Shuga, Luz Montesclaros, Jason~G. Underwood,
+  Donald~A. Masquelier, Stefanie~Y. Nishimura, Michael Schnall-Levin, Paul~W.
+  Wyatt, Christopher~M. Hindson, Rajiv Bharadwaj, Alexander Wong, Kevin~D.
+  Ness, Lan~W. Beppu, H.~Joachim Deeg, Christopher McFarland, Keith~R. Loeb,
+  William~J. Valente, Nolan~G. Ericson, Emily~A. Stevens, Jerald~P. Radich,
+  Tarjei~S. Mikkelsen, Benjamin~J. Hindson, and Jason~H. Bielas.
+\newblock Massively parallel digital transcriptional profiling of single cells.
+\newblock \emph{Nature Communications}, 8:\penalty0 14049, 2017.
+\newblock \doi{10.1038/ncomms14049}.
+
+\bibitem[Zhu et~al.(2003)Zhu, Ghahramani, and Lafferty]{zhu2003gaussian}
+Xiaojin Zhu, Zoubin Ghahramani, and John~D. Lafferty.
+\newblock Semi-supervised learning using gaussian fields and harmonic
+  functions.
+\newblock In \emph{Proceedings of the Twentieth International Conference on
+  Machine Learning}, pages 912--919, 2003.
+\newblock URL \url{https://www.cs.cmu.edu/~zhuxj/pub/zgl.pdf}.
+
+\end{thebibliography}

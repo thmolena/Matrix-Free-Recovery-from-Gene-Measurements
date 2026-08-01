@@ -1,641 +1,171 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Directed spectral-truncated operators for inductive classification of quantum phases across a control-parameter sweep</title>
-<meta name="description" content="A drive-directed, spectrally truncated, inductive graph operator that classifies the phase of a parameterized quantum many-body system as a control parameter is swept across a transition. A non-self-adjoint (noncommutative) propagator transports phase labels forward along the sweep; spectral truncation band-limits it into a closed-form solve; an out-of-sample Nystrom extension makes the classifier inductive and removes the transductive confound; a split-conformal layer gives distribution-free coverage. A controlled, fully seeded synthetic benchmark with proved operator-theoretic guarantees and an interactive in-browser illustration.">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
-  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],throwOnError:false});"></script>
-<style>
-  :root{
-    --bg:#fbfcfe; --panel:#ffffff; --ink:#10151c; --muted:#5b6675; --line:#e6eaf0;
-    --accent:#1A4E8A; --accent2:#1f6feb; --accent-d:#143c6b; --good:#1f7a3d; --warn:#9a5b00;
-    --code:#eef2f7; --codeink:#1b2330;
-    --shadow:0 1px 2px rgba(16,21,28,.06),0 8px 24px rgba(16,21,28,.06);
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
-    line-height:1.62;-webkit-font-smoothing:antialiased}
-  a{color:var(--accent2);text-decoration:none}
-  a:hover{text-decoration:underline}
-  code,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-  nav{position:sticky;top:0;z-index:50;background:rgba(251,252,254,.88);
-    backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  nav .wrap{max-width:1080px;margin:0 auto;padding:11px 22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-  nav .brand{font-weight:700;letter-spacing:-.01em;margin-right:auto;color:var(--ink)}
-  nav .brand .p{color:var(--accent)}
-  nav a{color:var(--muted);font-size:13.5px;font-weight:500}
-  nav a:hover{color:var(--ink);text-decoration:none}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
-  header.hero{padding:62px 22px 38px;text-align:center;background:
-    radial-gradient(1200px 420px at 50% -130px,rgba(26,78,138,.10),transparent),
-    radial-gradient(900px 360px at 82% -60px,rgba(31,111,235,.07),transparent)}
-  header.hero h1{font-size:clamp(26px,4.2vw,42px);line-height:1.13;letter-spacing:-.02em;margin:.2em auto;max-width:26ch}
-  header.hero .sub{color:var(--muted);font-size:clamp(15px,1.9vw,18px);max-width:74ch;margin:0 auto 8px}
-  .tag{display:inline-block;font-size:12px;font-weight:600;color:var(--accent);
-    background:rgba(26,78,138,.10);border:1px solid rgba(26,78,138,.28);border-radius:999px;padding:4px 12px;margin-bottom:14px;letter-spacing:.02em}
-  .authorline{color:var(--muted);font-size:14px;margin-top:18px}
-  .authorline b{color:var(--ink)}
-  .chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:22px 0 6px}
-  .chip{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--panel);
-    border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:150px;box-shadow:var(--shadow)}
-  .chip .n{font-size:20px;font-weight:700;color:var(--accent);letter-spacing:-.01em}
-  .chip .l{font-size:12px;color:var(--muted);text-align:center;line-height:1.3}
-  section{padding:34px 0;border-top:1px solid var(--line)}
-  section:first-of-type{border-top:none}
-  h2{font-size:clamp(20px,2.6vw,27px);letter-spacing:-.01em;margin:.1em 0 .5em;color:var(--accent-d)}
-  h2 .num{color:var(--accent);font-weight:700;margin-right:.45em;font-variant-numeric:tabular-nums}
-  h3{font-size:16.5px;margin:1.4em 0 .4em;color:var(--ink)}
-  p{margin:.55em 0}
-  .lead{font-size:17px}
-  ul,ol{margin:.5em 0 .8em;padding-left:1.3em}
-  li{margin:.36em 0}
-  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow);margin:16px 0}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-  @media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
-  .thm{border-left:3px solid var(--accent);background:#f6f9fd;border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0}
-  .thm .head{font-weight:700;color:var(--accent-d);font-size:14.5px;letter-spacing:.01em}
-  .thm .interp{color:var(--muted);font-size:14px;margin-top:7px;font-style:italic}
-  .meta{color:var(--muted);font-size:13.5px}
-  table.bk{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
-  table.bk caption{caption-side:top;text-align:left;font-size:13px;color:var(--muted);margin-bottom:8px}
-  table.bk th,table.bk td{padding:7px 10px;text-align:right}
-  table.bk th:first-child,table.bk td:first-child,
-  table.bk th:nth-child(2),table.bk td:nth-child(2){text-align:left}
-  table.bk thead th{border-bottom:1.5px solid var(--ink);font-weight:600}
-  table.bk .toprule td{border-top:1.8px solid var(--ink)}
-  table.bk tbody tr.splitgap td{padding-top:13px}
-  table.bk td.win{font-weight:700;color:var(--accent-d)}
-  table.bk tfoot td{border-top:1.5px solid var(--ink);font-weight:600}
-  table.bk .grp{color:var(--muted);font-size:12px;font-weight:400}
-  .scroll{overflow-x:auto}
-  pre{background:var(--code);color:var(--codeink);border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow-x:auto;font-size:13px;line-height:1.55;box-shadow:var(--shadow)}
-  pre .c{color:#6e7781}
-  pre .k{color:#0550ae}
-  code.inl{background:rgba(26,78,138,.08);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.92em}
-  .note{font-size:13.5px;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:10px 14px;background:#fcfdff}
-  .limit{border-left:3px solid var(--warn);background:#fffaf2;border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:14.5px}
-  /* demo */
-  .demo-wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:start}
-  @media(max-width:900px){.demo-wrap{grid-template-columns:1fr}}
-  #cellcanvas{width:100%;height:auto;display:block;background:#ffffff;border-radius:12px;border:1px solid #d8dee8}
-  .controls label{display:block;font-size:13px;font-weight:600;margin:14px 0 4px}
-  .controls input[type=range]{width:100%;accent-color:var(--accent)}
-  .seg{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 4px}
-  .seg button{flex:1 1 auto;font:inherit;font-size:12.5px;font-weight:600;padding:6px 8px;border-radius:8px;
-    border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
-  .seg button.on{background:var(--accent);border-color:var(--accent);color:#fff}
-  .readout{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-  .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-  .stat .lab{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-  .stat .v{font-size:20px;font-weight:700;color:var(--accent-d);font-variant-numeric:tabular-nums}
-  .stat .d{font-size:12px;color:var(--good);font-variant-numeric:tabular-nums}
-  .bar{height:9px;border-radius:6px;background:#eef1f6;overflow:hidden;margin-top:6px}
-  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:6px}
-  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
-  .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle}
-  footer{padding:40px 22px 60px;color:var(--muted);font-size:13.5px;text-align:center;border-top:1px solid var(--line)}
-  .kbd-tag{font-size:11px;color:var(--muted)}
-  sup a{font-size:.8em}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Sparse normal-action recovery of topology-regularized single-cell transition fields.">
+  <meta name="robots" content="index,follow">
+  <link rel="icon" href="data:,">
+  <title>Leakage-Audited Matrix-Free Residual Propagation for Gene Measurements</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']], tags: 'ams' },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root{--ink:#13231f;--muted:#53645f;--paper:#f6f4ed;--card:#fffdf7;--accent:#176b5b;--accent2:#d2763c;--line:#d7d6cc;--shadow:0 18px 50px rgba(22,46,39,.09)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.72 ui-serif,Georgia,Cambria,"Times New Roman",serif}
+    a{color:var(--accent)}a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #f0a76f;outline-offset:3px}
+    .shell{width:min(1180px,calc(100% - 40px));margin:auto}.hero{padding:82px 0 54px;background:radial-gradient(circle at 80% 20%,#dcece7,transparent 35%),linear-gradient(135deg,#f9f6eb,#edf3ee)}
+    .eyebrow,.tag{font:700 .76rem/1.2 ui-sans-serif,system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+    h1,h2,h3{font-family:ui-sans-serif,system-ui;line-height:1.12;letter-spacing:-.025em}h1{font-size:clamp(2.35rem,6vw,5.35rem);max-width:1020px;margin:.25em 0 .3em}h2{font-size:clamp(1.8rem,3.2vw,3rem);margin:0 0 .7em}h3{font-size:1.18rem}
+    .lede{max-width:820px;font-size:1.25rem;color:#324842}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.button{display:inline-block;padding:11px 17px;border:1px solid var(--accent);border-radius:999px;text-decoration:none;font:700 .9rem ui-sans-serif,system-ui;background:var(--card)}.button.primary{background:var(--accent);color:white}
+    nav{position:sticky;top:0;z-index:10;background:rgba(246,244,237,.94);backdrop-filter:blur(12px);border-block:1px solid var(--line)}nav .shell{display:flex;gap:20px;overflow:auto;padding-block:11px}nav a{white-space:nowrap;text-decoration:none;font:650 .82rem ui-sans-serif,system-ui;color:#29433c}
+    section{padding:72px 0;border-bottom:1px solid var(--line)}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:24px}.span-7{grid-column:span 7}.span-5{grid-column:span 5}.span-6{grid-column:span 6}
+    .card,.theorem,.figure-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:25px;box-shadow:var(--shadow)}.math{overflow:auto;background:#edf3ee;border-left:4px solid var(--accent);padding:20px;margin:24px 0}
+    .definition-list{display:grid;gap:13px}.definition-list div{padding:14px 0;border-bottom:1px solid var(--line)}.definition-list strong{font-family:ui-sans-serif,system-ui}
+    .steps{list-style:none;padding:0;margin:0;display:grid;gap:13px}.steps li{display:grid;grid-template-columns:44px 1fr;gap:15px;align-items:start}.steps span{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--ink);color:white;font:800 1rem ui-sans-serif,system-ui}.steps p{margin:5px 0}
+    .theorems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.theorem h3{margin:.55em 0}.theorem p{margin-bottom:0}
+    table{width:100%;border-collapse:collapse;background:var(--card)}th,td{padding:14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{width:24%;font-family:ui-sans-serif,system-ui}
+    .figure-card img{display:block;max-width:100%;margin:auto;border-radius:8px}.caption{color:var(--muted);font-size:.92rem}.results{display:grid;grid-template-columns:1fr 1fr;gap:24px}.results li{margin-bottom:13px}
+    .lab{display:grid;grid-template-columns:1fr 1fr;gap:20px}.controls label{display:block;font:650 .9rem ui-sans-serif,system-ui;margin:15px 0 5px}.controls input{width:100%}.barrow{margin:16px 0}.barlabel{display:flex;justify-content:space-between;font:650 .85rem ui-sans-serif,system-ui}.bar{height:18px;background:#e2e2da;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);width:40%;transition:width .2s}.bar.orange i{background:var(--accent2)}
+    pre{overflow:auto;padding:20px;background:#13231f;color:#f7f6ef;border-radius:14px;font:14px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace}.note{padding:18px 20px;border:1px solid #e5b68f;background:#fff3e6;border-radius:14px}.muted{color:var(--muted)}footer{padding:42px 0 70px}
+    @media(max-width:820px){.span-7,.span-5,.span-6{grid-column:1/-1}.theorems,.results,.lab{grid-template-columns:1fr}.hero{padding-top:55px}section{padding:52px 0}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar i{transition:none}}
+  </style>
 </head>
 <body>
-
-<nav><div class="wrap">
-  <span class="brand">Directed <span class="p">STDD</span></span>
-  <a href="#motivation">Background</a>
-  <a href="#operator">Operator</a>
-  <a href="#contrib">Contributions</a>
-  <a href="#theory">Guarantees</a>
-  <a href="#empirical">Results</a>
-  <a href="#demo">Demo</a>
-  <a href="#repro">Reproducibility</a>
-</div></nav>
-
-<header class="hero">
-  <div class="wrap">
-    <span class="tag">Noncommutative graph operators &middot; Spectral truncation &middot; Quantum-phase classification under distribution shift</span>
-    <h1>Directed spectral-truncated operators for inductive classification of quantum phases across a control-parameter sweep</h1>
-    <p class="sub">Read from the keyboard, a quantum simulator is a stochastic device: every preparation returns a single measurement record, so identifying the phase it occupies is statistical inference from finite, noisy samples and demands calibrated uncertainty. The graph smoother used almost universally for such data is <em>self-adjoint</em>, blind to the arrow of the drive, and, built over all states, transductive. This work replaces it with a <strong>drive-directed</strong>, <strong>spectrally truncated</strong>, <strong>inductive</strong> graph operator: a non-self-adjoint (noncommutative) propagator transports phase labels forward along the sweep, spectral truncation band-limits and denoises it into a closed-form solve, and an out-of-sample Nystr&ouml;m extension removes the transductive confound. On a fully seeded synthetic benchmark the operator improves held-out accuracy over a matched point classifier on all four transfer protocols, recovers a rare critical regime the baseline almost never finds, rescues forward extrapolation across the transition, and is conformally calibrated with distribution-free coverage. Every figure, table and number is generated by a pip-installable package.</p>
-    <div class="chips">
-      <div class="chip"><span class="n">+0.0864</span><span class="l">mean inductive accuracy gain<br>over matched <em>k</em>NN (all 4 splits)</span></div>
-      <div class="chip"><span class="n">0.3322</span><span class="l">rare-state recall vs <strong>0.0151</strong><br><em>k</em>NN (22&times; the baseline)</span></div>
-      <div class="chip"><span class="n">0.897 / 0.90</span><span class="l">conformal coverage vs target;<br>ECE 0.137 &rarr; 0.037</span></div>
-      <div class="chip"><span class="n">+0.1749</span><span class="l">forward-extrapolation accuracy<br>gain (directional transport)</span></div>
-    </div>
-    <p class="authorline"><b>Molena Huynh</b>, North Carolina State University &nbsp;&middot;&nbsp; <a href="mailto:molena.huynh@jmp.com">molena.huynh@jmp.com</a> &nbsp;&middot;&nbsp; reference implementation <code class="inl">specops-dsto</code> (CPU, pip-installable) &nbsp;&middot;&nbsp; all data synthetic and seeded</p>
-    <div class="hero-actions" style="margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;">
-      <a href="https://thmolena.github.io/Topological-Graph-for-Single-Cell-Transitions/submission/main.pdf" style="display:inline-block;padding:10px 18px;border-radius:8px;background:#1f6feb;color:#fff;font-weight:700;text-decoration:none;">Read the manuscript (PDF)</a>
-      <a href="#demo" style="display:inline-block;padding:10px 18px;border-radius:8px;border:1px solid rgba(120,140,170,.45);color:inherit;font-weight:600;text-decoration:none;">Interactive illustration</a>
-      <a href="submission/code" style="display:inline-block;padding:10px 18px;border-radius:8px;border:1px solid rgba(120,140,170,.45);color:inherit;font-weight:600;text-decoration:none;">Reproducible code</a>
-    </div>
-  </div>
-</header>
-
-<main class="wrap">
-
-<div style="margin:26px 0 6px;padding:18px 20px;border:1px solid rgba(127,140,170,.32);border-left:4px solid var(--accent,#1f6feb);border-radius:8px;background:rgba(127,140,170,.06);">
-  <strong style="display:block;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent,#1f6feb);margin-bottom:7px;">One operator-algebraic program</strong>
-  <p style="margin:0;font-size:1.02rem;line-height:1.6;">This work is one entry in a program that treats the <em>spectral truncation of operators</em> as a common design primitive across quantum optimization, simulation, and error correction. Here that primitive is carried onto the <em>state graph</em> of a parameterized quantum many-body system, where a band-limiting projector plays the role the residual or schedule truncation plays elsewhere in the series, and realizes the spectral truncation of multiplication operators that a companion operator-spectral prior uses for schedule transfer.</p>
-</div>
-
-<!-- ============================ BACKGROUND ============================ -->
-<section id="motivation">
-  <h2><span class="num">1</span>Background and Problem Setting</h2>
-  <p class="lead">A quantum simulator is, from the keyboard, a stochastic device interrogated only by sampling. The Born rule means each run returns a single bitstring drawn from a distribution, so recognizing the <em>phase</em> a prepared state occupies is not a deterministic readout but an inference problem &mdash; estimating a discrete label from a finite, noisy sample and attaching honest uncertainty to it.</p>
-  <p>Programmable quantum simulators prepare and measure many-body states across entire phase diagrams. The standard feature representation is the <em>classical shadow</em>: a randomized-measurement statistic that compresses an exponentially large state into a tractable, low-dimensional vector. Across a control-parameter sweep, these shadow features concentrate near a low-dimensional manifold &mdash; the phase diagram &mdash; routinely approximated by a <em>k</em>-nearest-neighbour (<em>k</em>NN) similarity graph. The canonical estimator on such a graph is graph-based semi-supervised learning: phase labels are diffused over the state graph so that each state borrows statistical strength from its neighbourhood. The diffusion operator used almost universally is the <em>symmetric</em> normalized adjacency $S=D^{-1/2}AD^{-1/2}$. Two properties of this object limit it for classification across a sweep.</p>
-  <div class="grid2">
-    <div class="panel">
-      <h3>It is self-adjoint &mdash; blind to direction</h3>
-      <p>$S$ is symmetric, hence reversible: it cannot encode the directed arrow of the drive, even though the control-parameter sweep supplies exactly that arrow and directed, non-Hermitian transition operators are the native language of driven and open quantum dynamics. Classifying <em>forward</em> across the transition is precisely where a symmetric smoother is weakest.</p>
-    </div>
-    <div class="panel">
-      <h3>Transductively evaluated, it is confounded</h3>
-      <p>Built over all states, the propagation graph consults the held-out states&rsquo; connectivity at inference. A measured accuracy gain over an inductive point classifier therefore conflates the value of diffusion with a transductive information advantage &mdash; the matched inductive control that symmetric-smoothing studies flag as their decisive missing experiment.</p>
-    </div>
-  </div>
-  <p>We take both properties as design targets and build a different object: a drive-directed, spectrally truncated, inductive graph operator. A second difficulty compounds them &mdash; the physically decisive regimes, quantum critical points and narrow topological windows, are rare, and classifiers trained to minimize average error miss them. Recovering such a regime with calibrated uncertainty is the open problem the operator is designed to solve.</p>
-  <div class="note">All experiments run on a seeded synthetic benchmark that emulates the shadow-feature geometry of a parameterized quantum system. This is a controlled, falsifiable stand-in, not quantum-device data; that scope is stated explicitly throughout and bounds every claim below.</div>
-</section>
-
-<!-- ============================ OPERATOR ============================ -->
-<section id="operator">
-  <h2><span class="num">2</span>The Operator</h2>
-  <p>Fix $n$ states embedded in a shadow-feature space $\mathbb{R}^{d}$ with a symmetric <em>k</em>NN adjacency $A$, degrees $D=\operatorname{diag}(d_i)$ and a control-parameter coordinate $s\in\mathbb{R}^n$. The classifier is a single operator built from three coupled constructions, each tied to a measured effect.</p>
-
-  <h3>Drive-directed propagator (noncommutativity)</h3>
-  <p>Each directed edge $i\!\to\! j$ is reweighted by a bounded forward kernel of the control-parameter increment and row-normalized,
-  $$ W_{ij}=A_{ij}\,\exp\!\bigl(\beta\tanh\tfrac{s_j-s_i}{\tau}\bigr),\qquad P=D_W^{-1}W, $$
-  giving a row-stochastic but <em>non-self-adjoint</em> propagator that transports labels forward along the sweep. Its relative non-normality $\nu(P)=\|PP^{\top}-P^{\top}P\|_F/\|P\|_F^2$ is strictly positive and increases with the directional strength $\beta$; this is the state-graph instance of the operator <em>noncommutativity</em> exploited by $C^{*}$-algebraic kernel machines.</p>
-
-  <h3>Spectral truncation (band-limiting)</h3>
-  <p>Let $U_r$ collect the leading $r$ graph-Fourier modes (the eigenvectors of $S$ for its largest eigenvalues). Restricting the diffusion to their span $\Pi_r=U_rU_r^{\top}$ is a <em>spectral truncation</em>: for the positive-semidefinite diffusion filter the method applies, it is the Eckart&ndash;Young&ndash;Mirsky-optimal rank-$r$ low-pass approximation, and the truncated, lazy directed transport
-  $$ B=U_r^{\top}\bigl((1-\varepsilon)I+\varepsilon P\bigr)U_r $$
-  is an $r\times r$ matrix admitting a closed-form solve. Truncation also makes the operator algebra noncommutative: the truncated multiplication operators $M_\phi^{(r)}=U_r^{\top}\operatorname{diag}(\phi)U_r$ do not commute &mdash; the spectral-truncation noncommutativity of noncommutative geometry, here on the state graph &mdash; and they generate a positive-definite Gram kernel $\mathcal K=\sum_c M_cM_c^{\top}$.</p>
-
-  <h3>Inductive Nystr&ouml;m extension (no transductive confound)</h3>
-  <p>The band-limited field is solved on the <em>training</em> states, $F^{\star}=U_r(I-\alpha B)^{-1}(1-\alpha)U_r^{\top}F_0$, and a held-out state is labelled by a Gaussian-weighted average of that field over its nearest <em>training</em> states. No test&ndash;test edge and no held-out connectivity is ever used at inference, so the classifier is genuinely <em>inductive</em> &mdash; the matched inductive control that resolves the transductive confound of symmetric smoothing, and the property that lets the trained operator transfer to states from a device it never saw.</p>
-  <p class="meta">A split-conformal layer calibrates the rare-regime prediction with distribution-free coverage, and the degree-0 persistence barcode of the state cloud replaces the passive connected-component count of prior work with an informative multiscale topology signal that guides active sampling.</p>
-</section>
-
-<!-- ============================ CONTRIBUTIONS ============================ -->
-<section id="contrib">
-  <h2><span class="num">3</span>Principal Contributions</h2>
-  <ol>
-    <li><strong>A drive-directed, noncommutative graph propagator.</strong> Reweighting <em>k</em>NN edges by a bounded forward kernel of the control-parameter increment yields a non-self-adjoint operator whose relative non-normality is strictly positive ($\nu(P)=0.0370$) and grows with the directional strength; the drive contributes ~36% of it over the undirected control ($\nu(P_0)=0.0272$). The directed transport carries labels along the sweep, which a symmetric smoother cannot do.</li>
-    <li><strong>Spectral truncation with proved optimality.</strong> Band-limiting the diffusion to the leading $r$ graph-Fourier modes is the optimal rank-$r$ low-pass approximation of the monotone positive-semidefinite diffusion filter (Eckart&ndash;Young&ndash;Mirsky), and the truncated multiplication operators on the state graph do not commute &mdash; the spectral-truncation noncommutativity of noncommutative geometry, with a positive-definite Gram kernel ($\lambda_{\min}=1.62>0$).</li>
-    <li><strong>An inductive operator that removes the transductive confound.</strong> An out-of-sample Nystr&ouml;m extension labels held-out states from the training field alone; the operator beats a matched inductive <em>k</em>NN classifier on accuracy on <em>all four</em> transfer protocols (mean $0.6856$ vs $0.5992$, gain $0.0864$), with the gain not attributable to a transductive information advantage.</li>
-    <li><strong>Rare-regime recovery and forward-extrapolation rescue.</strong> The operator lifts mean rare-state recall to $0.3322$ from a near-zero baseline ($0.0151$), and the directional transport raises forward-extrapolation (drive-schedule) accuracy by $0.1749$ over the point classifier and by $0.0850$ over symmetric label propagation.</li>
-    <li><strong>Distribution-free conformal calibration.</strong> A split-conformal layer attains realized marginal coverage $0.8968$ against a target of $0.90$ on an exchangeable hold-out, and temperature scaling cuts expected calibration error from $0.1374$ to $0.0369$ &mdash; turning the calibration penalty of graph smoothing into a calibration guarantee.</li>
-    <li><strong>A genuine multiscale topology signal.</strong> The degree-0 persistence barcode (computed exactly by union&ndash;find) replaces a constant connected-component count; a persistence-guided active sampler raises rare-state recall to $0.3941$ against $0.0481$ for random querying.</li>
-    <li><strong>Operator-theoretic guarantees and deterministic reproducibility.</strong> Theorems certify truncation optimality, noncommutativity, well-posedness, inductive consistency and conformal coverage; a pip-installable package (<code class="inl">specops-dsto</code>) regenerates every table, figure and number from a single seeded <code class="inl">summary.json</code>.</li>
-  </ol>
-</section>
-
-<!-- ============================ THEORY ============================ -->
-<section id="theory">
-  <h2><span class="num">4</span>Theoretical Guarantees</h2>
-  <p>The statements below are transcribed from the manuscript&rsquo;s self-contained theory section, each annotated with a one-line reading. Together they establish that the operator is well posed, genuinely noncommutative, optimally band-limited, inductively consistent and conformally valid.</p>
-
-  <div class="thm">
-    <div class="head">Theorem 1 (Spectral truncation is the optimal band-limit).</div>
-    <p>Among all rank-$r$ orthogonal projectors, the band-limiting projector $\Pi_r=U_rU_r^{\top}$ maximizes the retained smoothing energy $\operatorname{Tr}(\Pi S)$; and for any positive-semidefinite graph low-pass filter $R=g(S)$ with $g$ nondecreasing &mdash; in particular the diffusion resolvent and heat kernel the method realizes &mdash; $\Pi_r$ furnishes the Eckart&ndash;Young&ndash;Mirsky-optimal rank-$r$ approximation of $R$ in every unitarily invariant norm.</p>
-    <div class="interp">The leading graph-Fourier modes are the provably best rank-$r$ low-pass approximation of the smoother the classifier applies &mdash; spectral truncation is principled, not heuristic.</div>
-  </div>
-
-  <div class="thm">
-    <div class="head">Theorem 2 (Noncommutativity of the directed propagator and of truncation).</div>
-    <p>The directed propagator is non-normal, $[P,P^{\top}]\ne 0$, whenever the outgoing and incoming squared transition mass differ at some state; and the truncated multiplication operators satisfy $[M_\phi^{(r)},M_\psi^{(r)}]\ne 0$ in general, vanishing only in the full-rank limit $\Pi_r=I$.</p>
-    <div class="interp">Both the directionality and the truncation are genuinely noncommutative &mdash; the state-graph instance of the spectral-truncation noncommutativity of $C^{*}$-algebraic kernel machines.</div>
-  </div>
-
-  <div class="thm">
-    <div class="head">Theorem 3 (Well-posedness and closed form of the truncated directed diffusion).</div>
-    <p>If $\rho(\alpha B)<1$ then $I-\alpha B$ is invertible, the reduced field $F^{\star}=U_r(I-\alpha B)^{-1}(1-\alpha)U_r^{\top}F_0$ is the unique fixed point of the band-limited power iteration with geometric convergence, and it is invariant to the eigenvector sign gauge. At the fixed rank $r=80$, $\rho(\alpha B)=0.9209<1$.</p>
-    <div class="interp">The closed-form solve the code runs is well posed and gauge-independent &mdash; a faithful, geometrically convergent realization of the operator.</div>
-  </div>
-
-  <div class="thm">
-    <div class="head">Theorem 4 (Inductive consistency of the Nystr&ouml;m extension).</div>
-    <p>The out-of-sample estimator uses no test&ndash;test edge and no held-out connectivity, so the classifier is inductive; and for an $L$-Lipschitz field, $\|\widehat F(x_\ast)-F^{\star}(x_\ast)\|_2\le L\max_{i}\|x_i-x_\ast\|_2$, which vanishes as the training sample becomes dense.</p>
-    <div class="interp">The inductive extension is a consistent estimator of the band-limited field &mdash; the matched inductive control, made rigorous, that removes the transductive confound.</div>
-  </div>
-
-  <div class="thm">
-    <div class="head">Theorem 5 (Distribution-free conformal coverage).</div>
-    <p>For nonconformity score $s=1-p_y$ and the conformal quantile $\hat q$ of $n_{\text{cal}}$ calibration scores exchangeable with the test state, the prediction set $C(x)=\{c:1-p_c(x)\le\hat q\}$ satisfies $\Pr[y_{\text{test}}\in C(x_{\text{test}})]\ge 1-\delta$.</p>
-    <div class="interp">The rare-regime prediction carries a finite-sample, distribution-free coverage guarantee under exchangeability &mdash; the calibration penalty of smoothing becomes a calibration guarantee.</div>
-  </div>
-
-  <div class="thm">
-    <div class="head">Corollary (Non-identifiability of a label-free region).</div>
-    <p>A class absent from the labelled seed on every state reachable from the test region receives zero diffused mass there and cannot be recovered &mdash; the structural mechanism behind the null schedule-split rare-state recall, where the rare critical states lie beyond the labelled range of the control parameter.</p>
-    <div class="interp">Smoothing cannot invent an unreachable class; the schedule-split null is reported as-is, and the theory explains exactly why.</div>
-  </div>
-</section>
-
-<!-- ============================ RESULTS ============================ -->
-<section id="empirical">
-  <h2><span class="num">5</span>Results Highlights</h2>
-  <p>The full-scale configuration uses $n=3000$ states over $n_{\text{seeds}}=5$ seeds, truncation rank $r=80$, directional strength $\beta=1.0$. For each leakage-checked split, accuracy, ECE and rare-state recall are reported as mean $\pm$ 95% CI ($1.96\,s/\sqrt{n}$) for the inductive spectral-truncated directed-diffusion operator (<strong>STDD</strong>) and the matched inductive <em>k</em>NN baseline (<strong>kNN</strong>). Higher accuracy and recall are better; <em>lower</em> ECE is better. The better value in each split is in <strong>bold</strong>. Every entry is generated from the seeded <code class="inl">results/summary.json</code>.</p>
-
-  <div class="panel scroll">
-  <table class="bk">
-    <caption>Table 1. Held-out phase classification on the synthetic quantum benchmark (inductive STDD vs matched <em>k</em>NN).</caption>
-    <thead>
-      <tr><th>Split (transfer protocol)</th><th>Method</th><th>Accuracy &uarr;</th><th>ECE &darr;</th><th>Rare recall &uarr;</th></tr>
-    </thead>
-    <tbody>
-      <tr class="toprule"><td>device</td><td>STDD</td><td class="win">0.7227 &plusmn; 0.0187</td><td>0.1679</td><td class="win">0.3968 &plusmn; 0.3324</td></tr>
-      <tr><td>device</td><td>kNN</td><td>0.6550 &plusmn; 0.0491</td><td class="win">0.1073</td><td>0.0000 &plusmn; 0.0000</td></tr>
-
-      <tr class="splitgap"><td>shot noise</td><td>STDD</td><td class="win">0.7134 &plusmn; 0.0157</td><td>0.1707</td><td class="win">0.5706 &plusmn; 0.2824</td></tr>
-      <tr><td>shot noise</td><td>kNN</td><td>0.6355 &plusmn; 0.0363</td><td class="win">0.0905</td><td>0.0320 &plusmn; 0.0627</td></tr>
-
-      <tr class="splitgap"><td>drive schedule</td><td>STDD</td><td class="win">0.6323 &plusmn; 0.0369</td><td>0.1359</td><td>0.0000 &plusmn; 0.0000</td></tr>
-      <tr><td>drive schedule</td><td>kNN</td><td>0.4574 &plusmn; 0.0825</td><td class="win">0.0970</td><td>0.0000 &plusmn; 0.0000</td></tr>
-
-      <tr class="splitgap"><td>Hamiltonian</td><td>STDD</td><td class="win">0.6741 &plusmn; 0.0737</td><td>0.1420</td><td class="win">0.3616 &plusmn; 0.4156</td></tr>
-      <tr><td>Hamiltonian</td><td>kNN</td><td>0.6490 &plusmn; 0.0221</td><td class="win">0.1184</td><td>0.0286 &plusmn; 0.0560</td></tr>
-    </tbody>
-    <tfoot>
-      <tr><td colspan="2"><span class="grp">mean over splits</span> &mdash; STDD</td><td class="win">0.6856</td><td>&mdash;</td><td class="win">0.3322</td></tr>
-      <tr><td colspan="2"><span class="grp">mean over splits</span> &mdash; kNN</td><td>0.5992</td><td>&mdash;</td><td>0.0151</td></tr>
-    </tfoot>
-  </table>
-  </div>
-
-  <div class="panel scroll">
-  <table class="bk">
-    <caption>Table 2. Extended data: operator, conformal and active-sampling diagnostics (5 seeds).</caption>
-    <thead>
-      <tr><th>Quantity</th><th>Value</th></tr>
-    </thead>
-    <tbody>
-      <tr class="toprule"><td>Directed-propagator non-normality $\nu(P)$</td><td>0.0370 &plusmn; 0.0004</td></tr>
-      <tr><td>Undirected-walk non-normality $\nu(P_0)$</td><td>0.0272 &plusmn; 0.0003</td></tr>
-      <tr><td>Truncation commutator $\|[M_\phi,M_\psi]\|_F$</td><td>5.9318</td></tr>
-      <tr><td>Gram-kernel smallest eigenvalue $\lambda_{\min}(\mathcal K)$</td><td>1.62</td></tr>
-      <tr class="splitgap"><td>Conformal target / realized marginal coverage</td><td>0.90 / 0.8968 &plusmn; 0.0068</td></tr>
-      <tr><td>Conformal rare-state coverage</td><td>0.9307 &plusmn; 0.0531</td></tr>
-      <tr><td>Expected calibration error, raw &rarr; temperature-scaled</td><td>0.1374 &rarr; 0.0369</td></tr>
-      <tr class="splitgap"><td>Active sampling, persistence rare recall</td><td class="win">0.3941 &plusmn; 0.1910</td></tr>
-      <tr><td>Active sampling, density rare recall</td><td>0.3556 &plusmn; 0.1597</td></tr>
-      <tr><td>Active sampling, random rare recall</td><td>0.0481 &plusmn; 0.0445</td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <div class="grid2">
-    <div class="panel">
-      <h3 style="margin-top:0">Reading of the accuracy result</h3>
-      <p class="meta">The inductive operator improves accuracy on <em>every</em> transfer protocol, not on average only, and the comparison is inductive on both sides &mdash; so the gain is not the transductive information advantage that inflates symmetric-smoothing studies. It even exceeds transductive symmetric label propagation ($0.6587$) despite operating in the harder inductive regime. The largest margin is on the forward drive-schedule split, where the directed transport is decisive.</p>
-    </div>
-    <div class="panel">
-      <h3 style="margin-top:0">Reading of the rare-regime result</h3>
-      <p class="meta">The operator recovers a rare critical regime the point classifier almost never finds, at $22\times$ its mean recall. The drive-schedule null is reported as-is: forward extrapolation places the rare critical states beyond the labelled range of the control parameter, a label-free region the corollary proves diffusion cannot reach. Wide intervals on per-split rare recall follow from small absolute rare counts.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ DEMO ============================ -->
-<section id="demo">
-  <h2><span class="num">6</span>Interactive Illustration</h2>
-  <p>A self-contained, client-side illustration of the central mechanism, mirroring the manuscript&rsquo;s headline comparison. A schematic state graph carries a deliberately rare critical regime; sweeping the <em>operator strength</em> interpolates from the matched <em>k</em>NN point classifier (no operator) to the full spectral-truncated directed operator. As the operator engages, the displayed accuracy and rare-state recall move from the measured <em>k</em>NN endpoint toward the measured inductive-STDD endpoint for the selected split, making the per-protocol accuracy&ndash;recall behaviour of Table 1 directly visible.</p>
-  <div class="note">Qualitative interactive illustration of the manuscript. The graph layout is schematic; the two endpoints of each curve (operator strength $=0$ and $=1$) are anchored to the measured matched-<em>k</em>NN and inductive-STDD numbers for the selected split, and intermediate values are a monotone interpolation for intuition only. No quantum-device data are involved and nothing is recomputed in-browser.</div>
-
-  <div class="panel demo-wrap">
-    <div>
-      <canvas id="cellcanvas" width="520" height="360" aria-label="Schematic state graph with the drive-directed operator"></canvas>
-      <div class="legend">
-        <span><i style="background:#1f6feb"></i>Ordered phase A</span>
-        <span><i style="background:#1f9d57"></i>Disordered / parent phase</span>
-        <span><i style="background:#e0a400"></i>Rare critical regime</span>
-        <span><i style="background:#fff;border:1px solid #10151c"></i>annotated seed (clamped)</span>
+  <header class="hero">
+    <div class="shell">
+      <p class="eyebrow">Research article companion · matrix analysis · reproducible CPU study</p>
+      <h1>Leakage-Audited Matrix-Free Residual Propagation for Gene Measurements</h1>
+      <p class="lede">Sparse matrix-vector products estimate changes between cell-state vectors.</p>
+      <p class="muted">Molena Huynh · public preprint companion</p>
+      <div class="actions">
+        <a class="button primary" href="main.pdf">Read the paper</a>
+        <a class="button" href="code/README.md">Code guide</a>
+        <a class="button" href="#reproduce">Reproduce</a>
+        <a class="button" href="#data">Data provenance</a>
       </div>
     </div>
-    <div class="controls">
-      <div class="seg" id="splitseg" role="tablist" aria-label="Transfer protocol">
-        <button data-split="donor" class="on">device</button>
-        <button data-split="batch">shot noise</button>
-        <button data-split="time">drive schedule</button>
-        <button data-split="perturbation">Hamiltonian</button>
+  </header>
+  <nav aria-label="Page sections"><div class="shell">
+    <a href="#background">Matrix analysis</a><a href="#access">Operator products</a><a href="#objective">Objective</a><a href="#algorithm">Algorithm</a><a href="#theorems">Theorems</a><a href="#data">Data</a><a href="#results">Results</a><a href="#reproduce">Reproduction</a><a href="#limits">Scope</a>
+  </div></nav>
+  <main>
+    <section id="background"><div class="shell">
+      <p class="eyebrow">01 · Mathematical background</p><h2>Matrix and operator representation</h2>
+      <div class="grid"><div class="span-7">
+        <p>Let \(\mathbb{F}\in\{\mathbb{R},\mathbb{C}\}\), and let \(A:\mathbb{F}^n\to\mathbb{F}^m\) be a linear operator. Its matrix representation is denoted by \(A\in\mathbb{F}^{m\times n}\). The vector two-norm, Frobenius norm, and induced matrix two-norm are defined by</p>
+        <div class="math">\[\begin{aligned}
+          \lVert x\rVert_2 &amp;= (x^\ast x)^{1/2},\\
+          \lVert A\rVert_F &amp;= \left(\sum_{i=1}^{m}\sum_{j=1}^{n}|A_{ij}|^2\right)^{1/2},\\
+          \lVert A\rVert_2 &amp;= \sup_{\lVert x\rVert_2=1}\lVert Ax\rVert_2.
+        \end{aligned}\]</div>
+        <p>Let \(X\in\mathbb{R}^{n\times g}\) be a sparse cell-by-gene matrix, let \(P_\rho\) be the fitted sparse transition matrix, and set \(D_\rho=I-P_\rho\). The residual-field normal matrix is \(M+\mu I+\lambda D_\rho^\top D_\rho\), applied through sparse matrix-vector products.</p>
+        <p>For a specified tolerance, let \(\sigma_1\ge\cdots\ge\sigma_q\) denote the singular values. A rank-\(r\) approximation is justified by a bound on the discarded singular-value tail in the norm used by the associated theorem.</p>
+      </div><aside class="span-5 card">
+        <p class="tag">Reusable definitions</p>
+        <div class="definition-list">
+          <div><strong>Gene-measurement matrix.</strong> A matrix with cells as rows and measured genes as columns.</div>
+          <div><strong>Cell state.</strong> A row vector of the gene-measurement matrix.</div>
+          <div><strong>Recovery.</strong> Estimation of the change between cell states.</div>
+          <div><strong>Graph regularization.</strong> Use of a graph matrix to favor similar estimates for neighboring cells.</div>
+        </div>
+      </aside></div>
+    </div></section>
+
+    <section id="access"><div class="shell">
+      <p class="eyebrow">02 · Computational contract</p><h2>Available matrix-vector and matrix-block products</h2>
+      <div class="grid"><div class="span-6 card"><h3>Permitted primitives</h3><div class="math">\[v\longmapsto P_\rho v,\qquad u\longmapsto P_\rho^\top u,\qquad v\longmapsto\left(M+\mu I+\lambda D_\rho^\top D_\rho\right)v.\]</div><p>The implementation exposes sparse transition, transpose, and regularized normal-operator actions.</p></div>
+      <div class="span-6 card"><h3>Structure and assumptions</h3><p>A sparse k-nearest-neighbor graph supplies topology, while residual stopping and graph-perturbation audits control the recovered field.</p><p>Work depends on sparse matrix entries and iterative residual reduction.</p></div></div>
+      <div class="lab card" aria-label="Interactive storage comparison">
+        <div class="controls"><p class="tag">Interactive matrix storage comparison</p><label for="nRange">Matrix dimension n: <output id="nOut">4096</output></label><input id="nRange" type="range" min="256" max="16384" step="256" value="4096"><label for="rRange">Effective rank r: <output id="rOut">16</output></label><input id="rRange" type="range" min="2" max="128" step="2" value="16"></div>
+        <div><div class="barrow"><div class="barlabel"><span>Dense entries</span><output id="denseOut"></output></div><div class="bar orange"><i id="denseBar"></i></div></div><div class="barrow"><div class="barlabel"><span>Illustrative hierarchical entries</span><output id="structOut"></output></div><div class="bar"><i id="structBar"></i></div></div><p class="caption">This calculator displays \(n^2\) and \(O(nr\log_2 n)\) storage models. The manuscript states the associated assumptions and reports measured quantities separately.</p></div>
       </div>
+    </div></section>
 
-      <label for="smooth">Operator strength: <span id="smoothval">1.00</span></label>
-      <input type="range" id="smooth" min="0" max="1" step="0.01" value="1">
-      <p class="kbd-tag">0.00 = matched <em>k</em>NN point classifier &nbsp;&middot;&nbsp; 1.00 = spectral-truncated directed operator (inductive STDD)</p>
+    <section id="objective"><div class="shell">
+      <p class="eyebrow">03 · Proposed objective</p><h2>The scientific loss and its audit terms</h2>
+      <div class="math">\[\mathcal J(u)=\frac12\left\lVert M^{1/2}(u-r)\right\rVert_2^2+\frac{\mu}{2}\left\lVert u\right\rVert_2^2+\frac{\lambda}{2}\left\lVert D_\rho u\right\rVert_2^2,\qquad D_\rho=I-P_\rho.\]</div>
+      <p>The first term anchors the residual field to fit-cell errors, the second makes the system strictly positive definite, and the third regularizes variation under the sparse transition action. Development data select \(\rho\), \(\lambda\), and the final blend weight.</p>
+    </div></section>
 
-      <div class="readout">
-        <div class="stat">
-          <div class="lab">Held-out accuracy</div>
-          <div class="v" id="accv">0.7227</div>
-          <div class="d" id="accd">+0.0677 vs kNN</div>
-          <div class="bar"><i id="accbar" style="width:72%"></i></div>
-        </div>
-        <div class="stat">
-          <div class="lab">Rare-state recall</div>
-          <div class="v" id="recv">0.3968</div>
-          <div class="d" id="recd">+0.3968 vs kNN</div>
-          <div class="bar"><i id="recbar" style="width:40%"></i></div>
-        </div>
-        <div class="stat">
-          <div class="lab">Non-normality $\nu(P)$</div>
-          <div class="v" id="ecev">0.0370</div>
-          <div class="d" id="eced" style="color:var(--good)">directed, noncommutative</div>
-        </div>
-        <div class="stat">
-          <div class="lab">Baseline (kNN) accuracy</div>
-          <div class="v" id="basev">0.6550</div>
-          <div class="d" style="color:var(--muted)">fixed reference</div>
-        </div>
-      </div>
-      <p class="kbd-tag" id="anchornote">Endpoints anchored to Table 1, device split.</p>
-    </div>
-  </div>
-</section>
+    <section id="algorithm"><div class="shell">
+      <p class="eyebrow">04 · Algorithm</p><h2>Computational procedure from authenticated inputs to audited results</h2>
+      <ol class="steps"><li><span>1</span><p>Load and verify the PBMC3k expression matrix.</p></li>
+<li><span>2</span><p>Build the registered sparse cell graph and transition incidence action.</p></li>
+<li><span>3</span><p>Solve the regularized normal equations matrix-free.</p></li>
+<li><span>4</span><p>Audit residual, seed, and graph perturbation stability on held-out cells.</p></li></ol>
+    </div></section>
 
-<!-- ============================ SIGNIFICANCE ============================ -->
-<section id="significance">
-  <h2><span class="num">7</span>Significance and Impact</h2>
-  <p class="lead">Within a controlled benchmark, a drive-directed, spectrally truncated, inductive graph operator improves quantum-phase classification where the standard symmetric smoother is weakest &mdash; recovering a rare critical regime the point classifier almost never finds, and rescuing forward extrapolation across the transition &mdash; while removing the transductive confound and supplying distribution-free calibration.</p>
-  <p>For the machine-learning-for-quantum-physics program, the result is a directional, calibrated classifier that converts the arrow of the control-parameter sweep into rare-regime recovery, with a persistence-guided annotation policy that targets the sparse manifold pockets where critical states reside &mdash; each query being an expensive state preparation and measurement. For machine learning under covariate shift more broadly, the operator carries the spectral-truncation and noncommutativity machinery of $C^{*}$-algebraic kernel machines onto a graph-diffusion classifier and pairs it with an inductive extension that makes the diffusion gain attributable to one mechanism rather than to a confounded design choice. The accompanying theory certifies that the deployed solve faithfully realizes a well-posed, gauge-invariant estimator with a finite-sample coverage guarantee.</p>
-  <p>The decisive next step is to repeat exactly this comparison on classical shadows from a programmable quantum simulator and on perturbed-Hamiltonian families, for which the repository provides intentionally unexercised ingest stubs. The operator extends naturally to noisier, higher-dimensional drives, to higher-order persistence, and to a learned directed propagator in place of the fixed-kernel transport.</p>
-  <h3>Limitations (stated in full)</h3>
-  <div class="limit"><strong>(1) Synthetic data.</strong> All numbers come from a generated benchmark that emulates shadow-feature geometry, not measurements from a quantum device; the magnitudes need not transfer to real classical-shadow data, where shot noise, finite sampling, and device drift are far more severe.</div>
-  <div class="limit"><strong>(2) The transductive operator trades some accuracy.</strong> Held fixed in the transductive setting the directed operator nearly doubles symmetric label propagation&rsquo;s rare-state recall but loses a few points of mean accuracy; it is the <em>inductive</em> variant that recovers and exceeds the baseline&rsquo;s accuracy while removing the confound.</div>
-  <div class="limit"><strong>(3) Calibration is repaired post hoc, under exchangeability.</strong> The conformal guarantee holds for exchangeable calibration and test states; under grouping-transfer distribution shift (a genuinely new device or Hamiltonian), realized coverage is only approximate.</div>
-  <div class="limit"><strong>(4) Directionality requires a control-parameter estimate.</strong> The operator consumes a control-parameter coordinate; on real data this is the experimentally set drive, but an unparameterized or mislabelled sweep would weaken or mislead the directional transport.</div>
-  <div class="limit"><strong>(5) Standard degree-0 topology.</strong> The persistence barcode is a genuine multiscale invariant but $H_0$ only; the truncation-commutator noncommutativity and the Gram kernel are finite-rank witnesses, not a full $C^{*}$-algebraic construction.</div>
-  <div class="limit"><strong>(6) Single benchmark family.</strong> One synthetic generator, however controlled, cannot substitute for the diversity of real quantum systems; external validation remains the decisive test.</div>
-</section>
+    <section id="theorems"><div class="shell">
+      <p class="eyebrow">05 · Theorem map</p><h2>Theorem statements and controlled quantities</h2>
+      <div class="theorems"><article class="theorem" id="theorem-1"><span class="tag">Formal result 1</span><h3>Existence and uniqueness</h3><p>Uses regularization and the stated null-space condition.</p></article>
+<article class="theorem" id="theorem-2"><span class="tag">Formal result 2</span><h3>Storage and action cost</h3><p>Counts sparse operator work.</p></article>
+<article class="theorem" id="theorem-3"><span class="tag">Formal result 3</span><h3>Residual-to-solution error</h3><p>Converts the iterative residual to a solution bound.</p></article>
+<article class="theorem" id="theorem-4"><span class="tag">Formal result 4</span><h3>Operator-norm floor</h3><p>Controls the stability denominator.</p></article>
+<article class="theorem" id="theorem-5"><span class="tag">Formal result 5</span><h3>Seed and graph perturbation stability</h3><p>Audits finite changes to initialization and graph construction.</p></article></div>
+      <p class="note">These summaries provide a reading guide. <a href="main.pdf">The manuscript</a> contains the complete hypotheses and proofs.</p>
+    </div></section>
 
-<!-- ============================ REPRODUCIBILITY ============================ -->
-<section id="repro">
-  <h2><span class="num">8</span>Reproducibility</h2>
-  <p>The reference implementation is the pip-installable package <code class="inl">specops-dsto</code> at <code class="inl">submission/code</code> (CPU-only: NumPy, SciPy, scikit-learn, NetworkX, Matplotlib). A single seeded <code class="inl">results/summary.json</code> is the authoritative record for every table, figure and number; the manuscript&rsquo;s tables are generated verbatim from it, and no value here is hand-entered.</p>
-  <pre><span class="c"># 1. install the CPU reference package</span>
-cd submission/code
-<span class="k">pip install specops-dsto</span>       <span class="c"># or, from a checkout: pip install .</span>
+    <section id="data"><div class="shell">
+      <p class="eyebrow">06 · Real-data provenance</p><h2>Original source, integrity, and split</h2>
+      <table><tbody>
+        <tr><th>Dataset</th><td>10x Genomics PBMC3k: approximately 2,700 peripheral blood mononuclear cells.</td></tr>
+        <tr><th>Original source</th><td><a href="https://www.10xgenomics.com/datasets/3-k-pb-m-cs-from-a-healthy-donor-1-standard-1-1-0" rel="noreferrer">https://www.10xgenomics.com/datasets/3-k-pb-m-cs-from-a-healthy-donor-1-standard-1-1-0</a></td></tr>
+        <tr><th>Terms</th><td>10x Genomics source terms govern the dataset; redistribution rights should be checked before public release.</td></tr>
+        <tr><th>Split</th><td>Held-out cells with a 12-marker-gene registered task.</td></tr>
+        <tr><th>Integrity</th><td>The packaged source archive and derived outputs are checksum audited.</td></tr>
+        <tr><th>Download command</th><td><code>python code/scripts/download_data.py</code></td></tr>
+      </tbody></table>
+    </div></section>
 
-<span class="c"># 2. reproduce every number, table and figure</span>
-pytest tests/                                  <span class="c"># operator / conformal / persistence property tests</span>
-python scripts/run.py --config configs/full.yaml --out results   <span class="c"># -&gt; results/summary.json (~32 s, 621 MB)</span>
-python scripts/make_tables.py                  <span class="c"># results/main_results.tex, extended_results.tex</span>
-python scripts/make_figures.py                 <span class="c"># figures/fig_{schematic,sweep,forecast,operator,calibration}.pdf</span>
-python scripts/audit_claims.py                 <span class="c"># readiness gate: traceable numbers, integrity flags</span>
+    <section id="results"><div class="shell">
+      <p class="eyebrow">07 · Locked evidence</p><h2>Empirical evidence and supported claims</h2>
+      <div class="results"><div class="figure-card"><img src="code/manuscript_assets/figures/baseline_comparison.png" alt="Bar chart comparing the registered prediction methods"><p class="caption">Held-out mean squared error for the registered methods. Exact values and uncertainty definitions are in the paper tables.</p></div><div><ul><li>The matrix-free residual model improves the locked k-nearest-neighbor baseline on the registered task.</li>
+<li>The reported test mean-squared error is 0.4302386.</li>
+<li>The evidence is a one-donor single-cell pilot; quantum applications remain outside the empirical scope.</li></ul><p><a href="code/results/results.json">Inspect locked machine-readable results</a> · <a href="code/manuscript_assets/evidence_manifest.json">Inspect evidence manifest</a></p></div></div>
+    </div></section>
 
-<span class="c"># or use the installed entry point end-to-end</span>
-dsto-reproduce --config configs/full.yaml      <span class="c"># run + tables + figures</span>
+    <section id="reproduce"><div class="shell">
+      <p class="eyebrow">08 · CPU reproduction</p><h2>Installation and registered computational reproduction</h2>
+      <pre><code>python -m pip install -e code
+python code/scripts/download_data.py
+python code/scripts/reproduce.py
+python code/scripts/make_figures.py
+python code/scripts/validate_release.py</code></pre>
+      <p>The standardized scripts call the package console entry points and preserve a single implementation of the scientific algorithm.</p>
+    </div></section>
 
-<span class="c"># 3. build the manuscript</span>
-cd .. &amp;&amp; tectonic main.tex                      <span class="c"># or: latexmk -pdf main.tex</span></pre>
-  <p>Three integrity gates must pass before any metric is recorded: the grouping splits are leakage-free, the directed propagator is non-normal, and the rare regime is present. A failed gate halts the run rather than emitting a number.</p>
-  <div class="panel">
-    <h3 style="margin-top:0">Recorded provenance (deterministic results)</h3>
-    <p class="meta">Master seed $0$ &middot; runtime 32.0 s &middot; peak memory 621.2 MB. Generation is fully seeded and bit-for-bit reproducible (a fixed ARPACK starting vector makes the spectral truncation deterministic). Ingest stubs for real classical-shadow and perturbed-Hamiltonian data are included but intentionally not exercised.</p>
-  </div>
-  <p class="meta">No quantum-device data were used or generated. All results derive from a seeded synthetic benchmark regenerated deterministically by the code.</p>
-</section>
+    <section id="limits"><div class="shell">
+      <p class="eyebrow">09 · Scope and assumptions</p><h2>Scope of the empirical and theoretical evidence</h2>
+      <p class="note">Multi-donor and cross-platform validation are required before claiming biological generalization.</p>
+      <p>Operator-call reductions, allocation models, reconstruction audits, and wall-clock measurements constitute distinct reported quantities. Simulation supplies numerical evidence, while each conditional rank theorem applies under its stated compressibility assumptions.</p>
+    </div></section>
 
-<!-- ============================ REFERENCES ============================ -->
-<section id="references">
-  <h2><span class="num">9</span>References and Related Work</h2>
-  <p class="lead">The construction sits at the intersection of several literatures. Its diffusion backbone is <em>graph-based semi-supervised learning</em> &mdash; label propagation and learning with local and global consistency (Zhu &amp; Ghahramani; Zhou et al.). Its task is the recognition of <em>quantum phases from measurement data</em> &mdash; a workhorse of machine learning for quantum physics, typically over classical-shadow / randomized-measurement features (Carrasquilla &amp; Melko; Huang et al.; Carleo et al.). Its arrow comes from <em>directed, non-Hermitian transition operators</em> native to driven and open quantum dynamics, and from spectral learning on directed graphs (Chung; Zhang et al.). It is made inductive by an out-of-sample <em>Nystr&ouml;m</em> extension (Williams &amp; Seeger; Bengio et al.), calibrated by distribution-free <em>conformal prediction</em> (Vovk et al.; Lei et al.), and read out with a <em>persistent-homology</em> descriptor (Edelsbrunner &amp; Harer; Carlsson). The non-self-adjoint propagator and the truncated multiplication operators are the state-graph instance of the operator noncommutativity that recent $C^{*}$-algebraic spectral-truncation kernel machines exploit for expressiveness (Hashimoto et al.; van Suijlekom; Connes &amp; van Suijlekom).</p>
-  <p class="meta">This work is one entry in a broader program that treats the spectral truncation of operators as a common design primitive across quantum optimization, simulation, and error correction; the full citation set, including that series, appears in the manuscript.</p>
-  <ol style="font-size:.9rem;line-height:1.7;color:var(--ink)">
-    <li>Y. Hashimoto, A. Hafid, M. Ikeda, and H. Kadri, &ldquo;Spectral truncation kernels: Noncommutativity in $C^{*}$-algebraic kernel machines,&rdquo; <em>J. Mach. Learn. Res.</em> (2026); arXiv:<a href="https://arxiv.org/abs/2405.17823" target="_blank" rel="noreferrer">2405.17823</a>.</li>
-    <li>W. D. van Suijlekom, &ldquo;Gromov&ndash;Hausdorff convergence of state spaces for spectral truncations,&rdquo; <em>J. Geom. Phys.</em> <strong>162</strong>, 104075 (2021).</li>
-    <li>A. Connes and W. D. van Suijlekom, &ldquo;Spectral truncations in noncommutative geometry and operator systems,&rdquo; <em>Commun. Math. Phys.</em> <strong>383</strong>, 2021 (2021).</li>
-    <li>H.-Y. Huang, R. Kueng, and J. Preskill, &ldquo;Predicting many properties of a quantum system from very few measurements,&rdquo; <em>Nat. Phys.</em> <strong>16</strong>, 1050 (2020).</li>
-    <li>A. Elben, S. T. Flammia, H.-Y. Huang <em>et al.</em>, &ldquo;The randomized measurement toolbox,&rdquo; <em>Nat. Rev. Phys.</em> <strong>5</strong>, 9 (2023).</li>
-    <li>J. Carrasquilla and R. G. Melko, &ldquo;Machine learning phases of matter,&rdquo; <em>Nat. Phys.</em> <strong>13</strong>, 431 (2017).</li>
-    <li>G. Carleo, I. Cirac, K. Cranmer <em>et al.</em>, &ldquo;Machine learning and the physical sciences,&rdquo; <em>Rev. Mod. Phys.</em> <strong>91</strong>, 045002 (2019).</li>
-    <li>H.-Y. Huang, R. Kueng, G. Torlai <em>et al.</em>, &ldquo;Provably efficient machine learning for quantum many-body problems,&rdquo; <em>Science</em> <strong>377</strong>, eabk3333 (2022).</li>
-    <li>Y. Zhang, Y. Wang, and Y. Chen, &ldquo;MagNet: A neural network for directed graphs,&rdquo; <em>Adv. Neural Inf. Process. Syst.</em> <strong>34</strong>, 27003 (2021).</li>
-    <li>F. Chung, &ldquo;Laplacians and the Cheeger inequality for directed graphs,&rdquo; <em>Ann. Comb.</em> <strong>9</strong>, 1 (2005).</li>
-    <li>Y. Ashida, Z. Gong, and M. Ueda, &ldquo;Non-Hermitian physics,&rdquo; <em>Adv. Phys.</em> <strong>69</strong>, 249 (2020).</li>
-    <li>R. R. Coifman and S. Lafon, &ldquo;Diffusion maps,&rdquo; <em>Appl. Comput. Harmon. Anal.</em> <strong>21</strong>, 5 (2006).</li>
-    <li>D. Zhou, O. Bousquet, T. N. Lal, J. Weston, and B. Sch&ouml;lkopf, &ldquo;Learning with local and global consistency,&rdquo; <em>Adv. Neural Inf. Process. Syst.</em> <strong>16</strong>, 321 (2004).</li>
-    <li>X. Zhu and Z. Ghahramani, &ldquo;Learning from labeled and unlabeled data with label propagation,&rdquo; Tech. Rep. CMU-CALD-02-107, Carnegie Mellon University (2002).</li>
-    <li>C. K. I. Williams and M. Seeger, &ldquo;Using the Nystr&ouml;m method to speed up kernel machines,&rdquo; <em>Adv. Neural Inf. Process. Syst.</em> <strong>13</strong>, 682 (2001).</li>
-    <li>Y. Bengio, J.-F. Paiement, P. Vincent <em>et al.</em>, &ldquo;Out-of-sample extensions for LLE, Isomap, MDS, eigenmaps, and spectral clustering,&rdquo; <em>Adv. Neural Inf. Process. Syst.</em> <strong>16</strong>, 177 (2004).</li>
-    <li>V. Vovk, A. Gammerman, and G. Shafer, <em>Algorithmic Learning in a Random World</em> (Springer, 2005).</li>
-    <li>J. Lei, M. G&rsquo;Sell, A. Rinaldo, R. J. Tibshirani, and L. Wasserman, &ldquo;Distribution-free predictive inference for regression,&rdquo; <em>J. Am. Stat. Assoc.</em> <strong>113</strong>, 1094 (2018).</li>
-    <li>C. Guo, G. Pleiss, Y. Sun, and K. Q. Weinberger, &ldquo;On calibration of modern neural networks,&rdquo; in <em>Proc. Int. Conf. Mach. Learn. (ICML)</em> (2017), p. 1321.</li>
-    <li>H. Edelsbrunner and J. L. Harer, <em>Computational Topology: An Introduction</em> (American Mathematical Society, 2010).</li>
-    <li>G. Carlsson, &ldquo;Topology and data,&rdquo; <em>Bull. Am. Math. Soc.</em> <strong>46</strong>, 255 (2009).</li>
-    <li>Q. Cole, G. W. Merz, and others, &ldquo;Quantitative and interpretable order parameters for phase transitions from persistent homology,&rdquo; <em>Phys. Rev. B</em> <strong>104</strong>, 104426 (2021).</li>
-    <li>B. Settles, &ldquo;Active learning literature survey,&rdquo; Comput. Sci. Tech. Rep. 1648, University of Wisconsin&ndash;Madison (2009).</li>
-    <li>R. J. Tibshirani, R. Foygel Barber, E. Cand&egrave;s, and A. Ramdas, &ldquo;Conformal prediction under covariate shift,&rdquo; <em>Adv. Neural Inf. Process. Syst.</em> <strong>32</strong> (2019).</li>
-  </ol>
-</section>
-
-</main>
-
-<footer>
-  <div class="wrap">
-    <p><strong>Directed spectral-truncated operators for inductive classification of quantum phases across a control-parameter sweep</strong></p>
-    <p>Molena Huynh &middot; North Carolina State University &middot; <a href="mailto:molena.huynh@jmp.com">molena.huynh@jmp.com</a></p>
-    <p>reference implementation <code class="inl">specops-dsto</code> &middot; all data synthetic and seeded &middot; numbers generated from <code class="inl">results/summary.json</code></p>
-    <p><a href="https://thmolena.github.io/Topological-Graph-for-Single-Cell-Transitions/submission/main.pdf">Read the manuscript (PDF)</a></p>
-  </div>
-</footer>
-
-<!-- ============================ CITE ============================ -->
-<script type="application/x-bibtex" id="bibtex-src">
-@article{huynh2026dsto,
-  author  = {Huynh, Molena},
-  title   = {Directed spectral-truncated operators for inductive classification of quantum phases across a control-parameter sweep},
-  year    = {2026},
-  note    = {Part of the spectral-truncation-operators program},
-}
-</script>
-<section id="cite" style="max-width:1080px;margin:0 auto;padding:0 22px 40px;">
-  <h2><span class="num">10</span>Cite this work</h2>
-  <pre><span class="c">@article</span>{huynh2026dsto,
-  author  = {Huynh, Molena},
-  title   = {Directed spectral-truncated operators for inductive
-             classification of quantum phases across a
-             control-parameter sweep},
-  year    = {2026},
-  note    = {Part of the spectral-truncation-operators program},
-}</pre>
-</section>
-
-<script>
-"use strict";
-(function () {
-  // ---- Measured endpoints, transcribed from results/summary.json (Table 1) ----
-  // Split keys (donor/batch/time/perturbation) are the internal config names;
-  // they map to the transfer protocols device / shot-noise / drive-schedule / Hamiltonian.
-  // Each split: accuracy / rare-recall / ECE for inductive STDD (st) vs matched kNN.
-  var DATA = {
-    donor:        { stAcc: 0.7227, knnAcc: 0.6550, stRec: 0.3968, knnRec: 0.0000, stEce: 0.1679, knnEce: 0.1073, label: "device" },
-    batch:        { stAcc: 0.7134, knnAcc: 0.6355, stRec: 0.5706, knnRec: 0.0320, stEce: 0.1707, knnEce: 0.0905, label: "shot noise" },
-    time:         { stAcc: 0.6323, knnAcc: 0.4574, stRec: 0.0000, knnRec: 0.0000, stEce: 0.1359, knnEce: 0.0970, label: "drive schedule" },
-    perturbation: { stAcc: 0.6741, knnAcc: 0.6490, stRec: 0.3616, knnRec: 0.0286, stEce: 0.1420, knnEce: 0.1184, label: "Hamiltonian" }
-  };
-  var NU_DIR = 0.0370; // directed-propagator non-normality at full operator strength
-
-  var canvas = document.getElementById("cellcanvas");
-  var ctx = (canvas && canvas.getContext) ? canvas.getContext("2d") : null;
-  var state = { split: "donor", s: 1.0 };
-
-  // ---- Deterministic schematic graph (seeded LCG, no Math.random drift) ----
-  function lcg(seed) {
-    var x = seed >>> 0;
-    return function () { x = (1103515245 * x + 12345) & 0x7fffffff; return x / 0x7fffffff; };
-  }
-  var rnd = lcg(7);
-  var W = 520, H = 360, N = 64;
-  var nodes = [];
-  for (var i = 0; i < N; i++) {
-    var cls, r = rnd();
-    if (i >= N - 4) cls = 2;            // rare critical regime, late tip of an ordered phase
-    else if (r < 0.5) cls = 0;          // ordered phase A
-    else cls = 1;                       // disordered / parent phase
-    var cx, cy;
-    if (cls === 0) { cx = 0.30 * W; cy = 0.32 * H; }
-    else if (cls === 1) { cx = 0.62 * W; cy = 0.66 * H; }
-    else { cx = 0.86 * W; cy = 0.22 * H; }
-    nodes.push({
-      x: cx + (rnd() - 0.5) * 0.28 * W,
-      y: cy + (rnd() - 0.5) * 0.30 * H,
-      cls: cls,
-      pt: rnd(),                        // schematic control parameter s
-      labelled: rnd() < 0.16
-    });
-  }
-  for (var c0 = 0; c0 < N; c0++) {
-    nodes[c0].x = Math.max(16, Math.min(W - 16, nodes[c0].x));
-    nodes[c0].y = Math.max(16, Math.min(H - 16, nodes[c0].y));
-  }
-  // kNN edges (k=4) by squared Euclidean distance, oriented forward along the sweep
-  var edges = [];
-  for (var a = 0; a < N; a++) {
-    var ds = [];
-    for (var b = 0; b < N; b++) {
-      if (b === a) continue;
-      var dx = nodes[a].x - nodes[b].x, dy = nodes[a].y - nodes[b].y;
-      ds.push({ b: b, d: dx * dx + dy * dy });
-    }
-    ds.sort(function (p, q) { return p.d - q.d; });
-    for (var e = 0; e < 4; e++) edges.push({ a: a, b: ds[e].b });
-  }
-
-  var COLORS = ["#1f6feb", "#1f9d57", "#e0a400"];
-
-  function hex(h) { return [parseInt(h.substr(1, 2), 16), parseInt(h.substr(3, 2), 16), parseInt(h.substr(5, 2), 16)]; }
-  function blend(h1, h2, t) {
-    var p = hex(h1), q = hex(h2);
-    var r = Math.round(p[0] + (q[0] - p[0]) * t),
-        g = Math.round(p[1] + (q[1] - p[1]) * t),
-        bl = Math.round(p[2] + (q[2] - p[2]) * t);
-    return "rgb(" + r + "," + g + "," + bl + ")";
-  }
-  function star(cx, cy, spikes, outer, inner) {
-    var rot = -Math.PI / 2, step = Math.PI / spikes;
-    ctx.moveTo(cx + Math.cos(rot) * outer, cy + Math.sin(rot) * outer);
-    for (var i = 0; i < spikes; i++) {
-      ctx.lineTo(cx + Math.cos(rot) * outer, cy + Math.sin(rot) * outer); rot += step;
-      ctx.lineTo(cx + Math.cos(rot) * inner, cy + Math.sin(rot) * inner); rot += step;
-    }
-    ctx.closePath();
-  }
-
-  function arrowhead(x1, y1, x2, y2, frac, size) {
-    // draw a small arrowhead a fraction of the way along the edge (forward along the sweep)
-    var mx = x1 + (x2 - x1) * frac, my = y1 + (y2 - y1) * frac;
-    var ang = Math.atan2(y2 - y1, x2 - x1);
-    ctx.beginPath();
-    ctx.moveTo(mx, my);
-    ctx.lineTo(mx - size * Math.cos(ang - 0.4), my - size * Math.sin(ang - 0.4));
-    ctx.lineTo(mx - size * Math.cos(ang + 0.4), my - size * Math.sin(ang + 0.4));
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  function draw() {
-    if (!ctx) return;
-    var s = state.s;
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, W, H);
-    ctx.lineWidth = 1;
-    for (var i = 0; i < edges.length; i++) {
-      var pn = nodes[edges[i].a], qn = nodes[edges[i].b];
-      ctx.strokeStyle = "rgba(90,120,180," + (0.10 + 0.40 * s) + ")";
-      ctx.beginPath(); ctx.moveTo(pn.x, pn.y); ctx.lineTo(qn.x, qn.y); ctx.stroke();
-      // directionality: forward-along-the-sweep arrowheads fade in with operator strength
-      if (s > 0.02 && qn.pt > pn.pt) {
-        ctx.fillStyle = "rgba(26,78,138," + (0.55 * s) + ")";
-        arrowhead(pn.x, pn.y, qn.x, qn.y, 0.62, 4.5 * s + 1.5);
-      }
-    }
-    for (var j = 0; j < N; j++) {
-      var nd = nodes[j];
-      var base = COLORS[nd.cls];
-      var col = nd.labelled ? base : blend("#a8b3c6", base, s); // unlabelled states diffuse toward class colour
-      var rad = nd.cls === 2 ? 6.5 : 4.6;
-      ctx.beginPath();
-      if (nd.cls === 2) { star(nd.x, nd.y, 5, rad + 2.4, rad * 0.5); }
-      else { ctx.arc(nd.x, nd.y, rad, 0, Math.PI * 2); }
-      ctx.fillStyle = col;
-      ctx.fill();
-      if (nd.labelled) { ctx.lineWidth = 1.6; ctx.strokeStyle = "#10151c"; ctx.stroke(); }
-    }
-  }
-
-  function fmt(x) { return x.toFixed(4); }
-  function signed(x) { return (x >= 0 ? "+" : "−") + Math.abs(x).toFixed(4); }
-  function set(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
-  function width(id, pct) { var el = document.getElementById(id); if (el) el.style.width = Math.max(0, Math.min(100, pct)) + "%"; }
-
-  function update() {
-    var d = DATA[state.split], s = state.s;
-    // monotone linear interpolation between matched-kNN endpoint (s=0) and inductive STDD (s=1)
-    var acc = d.knnAcc + (d.stAcc - d.knnAcc) * s;
-    var rec = d.knnRec + (d.stRec - d.knnRec) * s;
-    var nu = NU_DIR * s; // non-normality grows from 0 (no operator) to the directed value
-    set("smoothval", s.toFixed(2));
-    set("accv", fmt(acc));
-    set("recv", fmt(rec));
-    set("ecev", fmt(nu));
-    set("basev", fmt(d.knnAcc));
-    set("accd", signed(acc - d.knnAcc) + " vs kNN");
-    set("recd", signed(rec - d.knnRec) + " vs kNN");
-    set("eced", s > 0.02 ? "directed, noncommutative" : "undirected (no operator)");
-    width("accbar", acc * 100);
-    width("recbar", rec * 100);
-    set("anchornote", "Endpoints anchored to Table 1, " + d.label + " split.");
-    draw();
-  }
-
-  // ---- wiring (guarded so the page degrades gracefully if elements are missing) ----
-  var slider = document.getElementById("smooth");
-  if (slider) slider.addEventListener("input", function () { state.s = parseFloat(slider.value); update(); });
-
-  var seg = document.getElementById("splitseg");
-  if (seg) {
-    seg.addEventListener("click", function (ev) {
-      var btn = ev.target && ev.target.closest ? ev.target.closest("button[data-split]") : null;
-      if (!btn) return;
-      state.split = btn.getAttribute("data-split");
-      var bs = seg.querySelectorAll("button");
-      for (var i = 0; i < bs.length; i++) bs[i].classList.toggle("on", bs[i] === btn);
-      update();
-    });
-  }
-
-  update(); // readouts populate even if canvas is unavailable
-})();
-</script>
+    <section id="citation"><div class="shell">
+      <p class="eyebrow">10 · Citation</p><h2>Public preprint citation</h2>
+      <pre><code id="bibtex">@misc{huynh2026singlecell,
+  title  = {Matrix-Free Recovery of Cell-State Changes from Gene Measurements},
+  author = {Huynh, Molena},
+  year   = {2026},
+  note   = {Preprint}
+}</code></pre>
+      <p class="muted">The authentic arXiv identifier will replace the preprint note upon assignment.</p>
+    </div></section>
+  </main>
+  <footer><div class="shell"><strong>Matrix-Free Recovery of Cell-State Changes from Gene Measurements</strong><br><span class="muted">Paper, source, data provenance, and reproducibility are maintained together.</span></div></footer>
+  <script>
+    const nRange=document.getElementById('nRange'),rRange=document.getElementById('rRange');
+    const nOut=document.getElementById('nOut'),rOut=document.getElementById('rOut');
+    const denseOut=document.getElementById('denseOut'),structOut=document.getElementById('structOut');
+    const denseBar=document.getElementById('denseBar'),structBar=document.getElementById('structBar');
+    const format=x=>new Intl.NumberFormat('en-US',{notation:x>1e7?'compact':'standard',maximumFractionDigits:1}).format(x);
+    function updateLab(){const n=Number(nRange.value),r=Number(rRange.value),dense=n*n,structured=2*n*r*Math.log2(n);nOut.value=n.toLocaleString();rOut.value=r;denseOut.value=format(dense);structOut.value=format(structured);denseBar.style.width='100%';structBar.style.width=Math.max(1,100*structured/dense)+'%'}
+    nRange.addEventListener('input',updateLab);rRange.addEventListener('input',updateLab);updateLab();
+  </script>
 </body>
 </html>

@@ -1,36 +1,20 @@
-# Python
+.DS_Store
+._*
 __pycache__/
 *.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
 *.egg-info/
-*.egg
 build/
 dist/
-.eggs/
-
-# Virtual environments
 .venv/
 venv/
-env/
-
-# Jupyter
-.ipynb_checkpoints/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# LaTeX build artifacts (keep .tex, .bib, .bbl and the compiled .pdf)
 *.aux
+*.blg
 *.log
 *.out
-*.blg
 *.fls
 *.fdb_latexmk
 *.synctex.gz
-*.toc
+mainNotes.bib
